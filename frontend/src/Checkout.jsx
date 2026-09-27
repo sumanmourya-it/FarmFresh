@@ -54,7 +54,7 @@ function Checkout() {
   };
 
   try {
-    const response = await fetch("http://localhost:8081/api/orders", {
+    const response = await fetch("https://unique-wisdom-production-d9f8.up.railway.app/api/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

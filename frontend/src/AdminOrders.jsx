@@ -6,7 +6,7 @@ function AdminOrders() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/orders")
+    fetch("https://unique-wisdom-production-d9f8.up.railway.app/api/orders")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to load orders");
