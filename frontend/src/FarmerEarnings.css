@@ -1,0 +1,275 @@
+
+.farmer-earnings-page {
+  padding: 28px;
+  color: #294331;
+  background: #f6f7f0;
+  min-height: 100%;
+  font-family: inherit;
+}
+
+.earnings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.earnings-eyebrow {
+  color: #7b8b75;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.earnings-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+
+.earnings-header p:not(.earnings-eyebrow) {
+  color: #7b8b75;
+  margin: 0;
+}
+
+.earnings-refresh,
+.earnings-error button {
+  border: 1px solid #dce4d5;
+  background: #fff;
+  color: #36583c;
+  border-radius: 8px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.earnings-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.earnings-card,
+.earnings-panel {
+  background: #fff;
+  border: 1px solid #e5e9df;
+  border-radius: 13px;
+  padding: 24px;
+  box-shadow: 0 3px 12px rgb(35 60 38 / 3%);
+}
+
+.earnings-card {
+  min-width: 0;
+}
+
+.earnings-card span {
+  display: block;
+  color: #7b8b75;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.earnings-card h2 {
+  font-size: clamp(22px, 3vw, 30px);
+  overflow-wrap: anywhere;
+  margin: 0 0 10px;
+  color: #294d32;
+}
+
+.earnings-card p,
+.earnings-panel-heading p {
+  color: #82907c;
+  font-size: 13px;
+  margin: 0;
+}
+
+.earnings-card-primary {
+  background: #eaf0e2;
+  border-color: #e0e8d7;
+}
+
+.earnings-panel {
+  margin-bottom: 24px;
+  min-width: 0;
+}
+
+.earnings-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.earnings-panel-heading h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.earnings-chart {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  min-height: 230px;
+  padding-top: 12px;
+  overflow-x: auto;
+}
+
+.earnings-chart-column {
+  display: flex;
+  flex: 1 0 55px;
+  min-width: 55px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.earnings-chart-value {
+  min-height: 18px;
+  color: #6d7f68;
+  font-size: 10px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.earnings-bar-track {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 150px;
+  width: 100%;
+  border-bottom: 1px solid #e6eadf;
+  background: linear-gradient(to bottom, #fafbf8, #f5f7f0);
+  border-radius: 7px 7px 0 0;
+}
+
+.earnings-bar {
+  width: min(38px, 75%);
+  min-height: 0;
+  background: #65875a;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.3s ease;
+}
+
+.earnings-chart-month {
+  font-size: 11px;
+  color: #6d7f68;
+  text-align: center;
+}
+
+.earnings-table-wrapper {
+  overflow-x: auto;
+}
+
+.earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.earnings-table th {
+  color: #778772;
+  background: #f8f9f5;
+  font-weight: 600;
+}
+
+.earnings-table th,
+.earnings-table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #edf0e8;
+  white-space: nowrap;
+}
+
+.earnings-amount {
+  color: #365e3a;
+  font-weight: 700;
+}
+
+.earnings-empty,
+.earnings-message {
+  color: #7b8b75;
+  padding: 24px 12px;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.earnings-error {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #eadbd5;
+  border-radius: 12px;
+  color: #8d3e31;
+}
+
+.earnings-error p {
+  line-height: 1.6;
+}
+
+.earnings-note {
+  color: #7b8b75;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+@media (max-width: 600px) {
+  .farmer-earnings-page {
+    padding: 16px;
+  }
+
+  .earnings-header {
+    align-items: flex-start;
+  }
+
+  .earnings-header h1 {
+    font-size: 25px;
+  }
+
+  .earnings-refresh {
+    padding: 10px;
+  }
+
+  .earnings-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .earnings-card,
+  .earnings-panel {
+    padding: 18px;
+  }
+}
+
+/* Make earnings dashboard headings clearly visible */
+.farmer-earnings-page .earnings-header h1,
+.farmer-earnings-page .earnings-panel-heading h2 {
+  color: #234b2d !important;
+  font-weight: 700;
+}
+
+/* Improve visibility of chart labels and amounts */
+.farmer-earnings-page .earnings-chart-value,
+.farmer-earnings-page .earnings-chart-month {
+  color: #365c3b;
+  font-weight: 600;
+}
+
+/* Rich green chart bars */
+.farmer-earnings-page .earnings-bar {
+  background: #4f7d43;
+}
+
+/* Make empty sales message readable */
+.farmer-earnings-page .earnings-empty {
+  color: #48634a;
+}
+
+/* Keep the dashboard heading dark green */
+.farmer-earnings-page .earnings-eyebrow {
+  color: #52764b;
+}
+

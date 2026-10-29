@@ -1,0 +1,243 @@
+
+/* Role Selection Page */
+
+.role-selection-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(211, 236, 194, 0.55),
+      transparent 40%
+    ),
+    #f6f8f1;
+  font-family: "DM Sans", Arial, sans-serif;
+  color: #243b2b;
+}
+
+.role-selection-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 44px 38px 30px;
+  background: #ffffff;
+  border: 1px solid #e7eee2;
+  border-radius: 24px;
+  box-shadow: 0 18px 55px rgba(39, 76, 48, 0.09);
+  text-align: center;
+}
+
+/* Brand */
+
+.role-selection-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.role-selection-icon {
+  font-size: 32px;
+}
+
+.role-selection-brand h1 {
+  margin: 0;
+  color: #28633b;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 29px;
+  font-weight: 700;
+}
+
+/* Heading */
+
+.role-selection-eyebrow {
+  margin: 0 0 12px;
+  color: #5c9655;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.role-selection-card h2 {
+  margin: 0 0 12px;
+  color: #233b2a;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(27px, 5vw, 36px);
+  line-height: 1.2;
+}
+
+.role-selection-description {
+  max-width: 390px;
+  margin: 0 auto 30px;
+  color: #718074;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* Role Options */
+
+.role-selection-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.role-selection-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  padding: 19px 17px;
+  border: 1px solid #e1eadd;
+  border-radius: 15px;
+  background: #ffffff;
+  color: #243b2b;
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.role-selection-option:hover {
+  border-color: #6b9e60;
+  background: #f7fbf4;
+  box-shadow: 0 8px 20px rgba(39, 76, 48, 0.08);
+  transform: translateY(-2px);
+}
+
+.role-selection-option:focus-visible {
+  outline: 3px solid rgba(79, 137, 68, 0.3);
+  outline-offset: 3px;
+}
+
+.role-selection-option:active {
+  transform: translateY(0);
+}
+
+/* Customer, Farmer and Admin Icons */
+
+.role-selection-option-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: #edf5e8;
+  font-size: 23px;
+}
+
+.customer-option .role-selection-option-icon {
+  background: #edf5e8;
+}
+
+.farmer-option .role-selection-option-icon {
+  background: #f2f4df;
+}
+
+.admin-icon {
+  background: #eaf0fa;
+}
+
+/* Role Text */
+
+.role-selection-option-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.role-selection-option-text strong {
+  color: #243b2b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.role-selection-option-text small {
+  color: #788579;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Arrow */
+
+.role-selection-arrow {
+  flex-shrink: 0;
+  color: #4f8b4a;
+  font-size: 24px;
+  transition: transform 0.2s ease;
+}
+
+.role-selection-option:hover .role-selection-arrow {
+  transform: translateX(4px);
+}
+
+/* Admin Styling */
+
+.admin-option {
+  border-color: #e0e6ef;
+}
+
+.admin-option:hover {
+  border-color: #809ac4;
+  background: #f7f9fd;
+}
+
+.admin-option .role-selection-arrow {
+  color: #466da6;
+}
+
+/* Footer */
+
+.role-selection-footer {
+  margin: 28px 0 0;
+  color: #899589;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+
+@media (max-width: 480px) {
+  .role-selection-page {
+    padding: 20px 12px;
+  }
+
+  .role-selection-card {
+    padding: 34px 20px 25px;
+    border-radius: 19px;
+  }
+
+  .role-selection-brand {
+    margin-bottom: 24px;
+  }
+
+  .role-selection-option {
+    gap: 11px;
+    padding: 15px 12px;
+  }
+
+  .role-selection-option-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
+  .role-selection-option-text strong {
+    font-size: 14px;
+  }
+
+  .role-selection-option-text small {
+    font-size: 11px;
+  }
+}

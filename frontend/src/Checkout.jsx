@@ -13,72 +13,137 @@ function Checkout() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [savedOrder, setSavedOrder] = useState(null);
 
-  const [cartItems] = useState(() => {
-    const savedCart = localStorage.getItem("farmfreshCart");
-
-    return savedCart ? JSON.parse(savedCart) : [];
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem("farmfreshCart");
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch {
+      return [];
+    }
   });
 
   const cartTotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) =>
+      total + Number(item.price) * Number(item.quantity),
     0
   );
 
   const cartCount = cartItems.reduce(
-    (total, item) => total + item.quantity,
+    (total, item) => total + Number(item.quantity),
     0
   );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setCustomer((previousCustomer) => ({
-      ...previousCustomer,
+    setCustomer((previous) => ({
+      ...previous,
       [name]: value,
     }));
   };
 
- const handleSubmit = async (event) => {
-  event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const orderData = {
-    name: customer.name,
-    email: customer.email,
-    mobile: customer.mobile,
-    address: customer.address,
-    city: customer.city,
-    pincode: customer.pincode,
-    payment: customer.payment,
-    total: cartTotal,
-  };
+    if (saving) return;
 
-  try {
-    const response = await fetch("https://unique-wisdom-production-d9f8.up.railway.app/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(orderData),
-    });
-
-    if (!response.ok) {
-      throw new Error("Order could not be saved");
+    if (cartItems.length === 0) {
+      alert("Your cart is empty. Please add products first.");
+      return;
     }
 
-    setSubmitted(true);
-    localStorage.removeItem("farmfreshCart");
-  } catch (error) {
-    console.error("Order Error:", error);
+    let auth;
 
-    alert(
-      "Order could not be saved. Please make sure the Spring Boot backend is running."
-    );
-  }
-};
+    try {
+      auth = JSON.parse(
+        sessionStorage.getItem("farmfreshAuth") || "null"
+      );
+    } catch {
+      alert("Your login session is invalid. Please log in again.");
+      window.location.href = "/login";
+      return;
+    }
+
+    if (!auth?.token) {
+      alert("Please log in as a customer before placing your order.");
+      window.location.href = "/login";
+      return;
+    }
+
+    if (auth.role && auth.role !== "CUSTOMER") {
+      alert("Please log in with a customer account to place an order.");
+      return;
+    }
+
+    const orderData = {
+      name: customer.name.trim(),
+      email: auth.email || customer.email.trim(),
+      mobile: customer.mobile.trim(),
+      address: customer.address.trim(),
+      city: customer.city.trim(),
+      pincode: customer.pincode.trim(),
+      payment: customer.payment,
+      total: cartTotal,
+      items: cartItems.map((item) => ({
+        productId: item.id,
+        name: item.name,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+        subtotal: Number(item.price) * Number(item.quantity),
+      })),
+    };
+
+    setSaving(true);
+
+    try {
+      const response = await fetch("http://localhost:8081/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.text();
+
+        throw new Error(
+          `Order failed (${response.status}): ${
+            errorDetails || "The server could not save the order."
+          }`
+        );
+      }
+
+      const result = await response.json();
+
+      setSavedOrder(result);
+      setSubmitted(true);
+      localStorage.removeItem("farmfreshCart");
+      setCartItems([]);
+    } catch (error) {
+      console.error("Order Error:", error);
+
+      alert(
+        `Order could not be saved.\n${error.message}\n\n` +
+        "Check that Spring Boot is running and review the browser Console."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (submitted) {
     return (
       <div className="checkout-page">
+        <header className="checkout-header">
+          <div className="checkout-logo">🌿 FarmFresh</div>
+          <span>🔒 Secure Checkout</span>
+        </header>
+
         <div className="success-card">
           <div className="success-icon">✓</div>
 
@@ -93,8 +158,15 @@ function Checkout() {
           </p>
 
           <div className="order-info">
+            {savedOrder?.id != null && (
+              <p>
+                <strong>Order Number:</strong> {savedOrder.id}
+              </p>
+            )}
+
             <p>
-              <strong>Order Status:</strong> Confirmed
+              <strong>Order Status:</strong>{" "}
+              {savedOrder?.status || "Pending"}
             </p>
 
             <p>
@@ -111,9 +183,20 @@ function Checkout() {
           </div>
 
           <button
+            type="button"
             className="checkout-button"
             onClick={() => {
-              window.location.href = "/";
+              window.location.href = "/customer/orders";
+            }}
+          >
+            Track My Order
+          </button>
+
+          <button
+            type="button"
+            className="back-button"
+            onClick={() => {
+              window.location.href = "/shop";
             }}
           >
             Continue Shopping
@@ -125,29 +208,20 @@ function Checkout() {
 
   return (
     <div className="checkout-page">
-      {/* HEADER */}
       <header className="checkout-header">
         <div className="checkout-logo">🌿 FarmFresh</div>
-
         <span>🔒 Secure Checkout</span>
       </header>
 
-      {/* CHECKOUT CONTAINER */}
       <div className="checkout-container">
-        {/* MAIN FORM */}
         <div className="checkout-main">
           <div className="checkout-title">
             <span className="step-label">CHECKOUT</span>
-
             <h1>Complete Your Order</h1>
-
-            <p>
-              Fresh products, delivered directly to your doorstep.
-            </p>
+            <p>Fresh products, delivered directly to your doorstep.</p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            {/* CONTACT INFORMATION */}
             <section className="checkout-card">
               <h2>
                 <span>1</span> Contact Information
@@ -156,7 +230,6 @@ function Checkout() {
               <div className="form-grid">
                 <div className="form-group full-width">
                   <label htmlFor="name">Full Name</label>
-
                   <input
                     id="name"
                     type="text"
@@ -170,7 +243,6 @@ function Checkout() {
 
                 <div className="form-group">
                   <label htmlFor="email">Email Address</label>
-
                   <input
                     id="email"
                     type="email"
@@ -184,14 +256,13 @@ function Checkout() {
 
                 <div className="form-group">
                   <label htmlFor="mobile">Mobile Number</label>
-
                   <input
                     id="mobile"
                     type="tel"
                     name="mobile"
                     placeholder="10-digit mobile number"
                     pattern="[0-9]{10}"
-                    maxLength="10"
+                    maxLength={10}
                     value={customer.mobile}
                     onChange={handleChange}
                     required
@@ -200,7 +271,6 @@ function Checkout() {
               </div>
             </section>
 
-            {/* DELIVERY ADDRESS */}
             <section className="checkout-card">
               <h2>
                 <span>2</span> Delivery Address
@@ -208,22 +278,20 @@ function Checkout() {
 
               <div className="form-group">
                 <label htmlFor="address">Complete Address</label>
-
                 <textarea
                   id="address"
                   name="address"
                   placeholder="House number, street, area"
-                  rows="3"
+                  rows={3}
                   value={customer.address}
                   onChange={handleChange}
                   required
-                ></textarea>
+                />
               </div>
 
               <div className="form-grid">
                 <div className="form-group">
                   <label htmlFor="city">City</label>
-
                   <input
                     id="city"
                     type="text"
@@ -237,14 +305,13 @@ function Checkout() {
 
                 <div className="form-group">
                   <label htmlFor="pincode">PIN Code</label>
-
                   <input
                     id="pincode"
                     type="text"
                     name="pincode"
                     placeholder="6-digit PIN code"
                     pattern="[0-9]{6}"
-                    maxLength="6"
+                    maxLength={6}
                     value={customer.pincode}
                     onChange={handleChange}
                     required
@@ -253,7 +320,6 @@ function Checkout() {
               </div>
             </section>
 
-            {/* PAYMENT METHOD */}
             <section className="checkout-card">
               <h2>
                 <span>3</span> Payment Method
@@ -264,15 +330,12 @@ function Checkout() {
                   type="radio"
                   name="payment"
                   value="Cash on Delivery"
-                  checked={
-                    customer.payment === "Cash on Delivery"
-                  }
+                  checked={customer.payment === "Cash on Delivery"}
                   onChange={handleChange}
                 />
 
                 <div>
                   <strong>💵 Cash on Delivery</strong>
-
                   <p>Pay when your order arrives.</p>
                 </div>
               </label>
@@ -288,41 +351,37 @@ function Checkout() {
 
                 <div>
                   <strong>📱 UPI Payment</strong>
-
                   <p>Demo option for project presentation.</p>
                 </div>
               </label>
             </section>
 
-            {/* PLACE ORDER */}
             <button
               type="submit"
               className="checkout-button"
-              disabled={cartItems.length === 0}
+              disabled={cartItems.length === 0 || saving}
             >
-              Place Order ₹{cartTotal} →
+              {saving
+                ? "Placing Order..."
+                : `Place Order ₹${cartTotal} →`}
             </button>
 
-            {/* BACK TO SHOPPING */}
+            {cartItems.length === 0 && (
+              <p>Your cart is empty. Add products before checkout.</p>
+            )}
+
             <button
               type="button"
               className="back-button"
-
               onClick={() => {
-  localStorage.setItem(
-    "farmfreshCart",
-    JSON.stringify(cartItems)
-  );
-
-  window.location.href = "/checkout";
-}}
+                window.location.href = "/shop";
+              }}
             >
               ← Back to Shopping
             </button>
           </form>
         </div>
 
-        {/* ORDER SUMMARY */}
         <aside className="checkout-summary">
           <h2>Order Summary</h2>
 
@@ -339,14 +398,13 @@ function Checkout() {
                 <div className="summary-product" key={item.id}>
                   <div>
                     <strong>{item.name}</strong>
-
                     <p>
                       ₹{item.price} × {item.quantity}
                     </p>
                   </div>
 
                   <strong>
-                    ₹{item.price * item.quantity}
+                    ₹{Number(item.price) * Number(item.quantity)}
                   </strong>
                 </div>
               ))
@@ -358,7 +416,7 @@ function Checkout() {
             <strong className="free">FREE</strong>
           </div>
 
-          <div className="summary-divider"></div>
+          <div className="summary-divider" />
 
           <div className="summary-total">
             <span>Total</span>

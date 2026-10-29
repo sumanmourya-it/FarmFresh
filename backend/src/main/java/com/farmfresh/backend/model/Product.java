@@ -1,11 +1,8 @@
-
 package com.farmfresh.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.farmfresh.backend.entity.Farmer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
@@ -22,6 +19,14 @@ public class Product {
     private BigDecimal price;
     private Integer quantity;
     private String description;
+
+    @Column(name = "approval_status", nullable = false)
+    private String approvalStatus = "PENDING";
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farmer_id")
+    @JsonIgnore
+    private Farmer farmer;
 
     public Product() {
     }
@@ -72,5 +77,21 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public Farmer getFarmer() {
+        return farmer;
+    }
+
+    public void setFarmer(Farmer farmer) {
+        this.farmer = farmer;
     }
 }
